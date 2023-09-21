@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-4xl text-red-600 mb-4">
+    You searched for "{{ query }}"
+</div>
+
+<div class="text-sm mb-4">
+    Showing
+    <span class="font-bold">{{ results | length}}</span>
+    of
+    <span class="font-bold">{{ results | length}}</span>
+    Product{% if results|length != 1 %}s{% endif %}
+</div>
+
+<div class="grid grid-cols-4 gap-4">
+{% for i, book in results %}
+<div class="h-80 flex flex-col justify-between items-center">
+    <div class="h-52">
+        <img class="object-scale-down max-h-full m-auto" src="{{ book['img'] }}" alt="Cover of {{ book['title'] }}">
+    </div>
+
+    <div class="w-full flex flex-row justify-between items-center">
+        <div class="flex flex-col">
+            <div class="font-bold text-red-600 break-words">{{ book["title"] }}</div>
+            <div class="break-words">{{ book["author"] }}</div>
+            <div class="font-bold">{{ fmt_money(book["price"]) }}</div>
+        </div>
+
+        <form method="post" action="/book" class="mr-2">
+            <input type="hidden" name="book" value="{{ book['id'] }}">
+            <input type="hidden" name="query" value="{{ query }}">
+            <button type="submit">
+            {% if book["id"] in cart %}
+                <svg role="presentation" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="#e03a3e" fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3 11H9a1 1 0 1 1 0-2h6a1 1 0 1 1 0 2z"></path>
+                </svg>
+            {% else %}
+                <svg role="presentation" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="#e03a3e" fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3 11h-2v2a1 1 0 1 1-2 0v-2H9a1 1 0 1 1 0-2h2V9a1 1 0 1 1 2 0v2h2a1 1 0 1 1 0 2z"></path>
+                </svg>
+            {% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+
+{% if i % 4 == 3 %}
+    <div class="col-span-full border-b border-gray-500"></div>
+{% endif %}
+
+{% endfor %}
+</div>
+
+{% endblock %}

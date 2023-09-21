@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between">
+
+<div class="w-full flex flex-col space-y-2 md:mr-4">
+    <div class="mb-4">
+        <span class="text-4xl text-red-600">Your shopping cart</span>
+        <span class="text-2xl ml-2">({{ cart|length }} item{% if cart|length != 1 %}s{% endif %})</span>
+    </div>
+
+    <div>
+        Unforunately, due to new University Requirements, bookstore orders
+        must now include precise justification for all items.
+        Why do you need to purchase these books?
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="italic text-red-600">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="col-span-full border-b border-gray-500"></div>
+
+    <form class="grid grid-cols-2 gap-4" action="/order/confirm" method="post" id="justification">
+        {% for book in results %}
+            <div class="font-bold text-red-600 text-right break-words">{{ book["title"] }}</div>
+            <input class="bg-inherit border-b border-gray-500 w-64" type="text" name="{{ book['id'] }}" placeholder="Justification">
+        {% endfor %}
+    </form>
+</div>
+
+<div class="bg-stone-200 p-4 space-y-2 font-bold w-96">
+    <div class="text-2xl">Order Summary</div>
+
+    <div class="flex flex-row justify-between">
+        <div>Subtotal</div>
+        <div>{{ fmt_money(prices["books"]) }}</div>
+    </div>
+
+    <div class="flex flex-row justify-between">
+        <div>Handling</div>
+        <div>{{ fmt_money(prices["handling"]) }}</div>
+    </div>
+
+    <div class="flex flex-row justify-between">
+        <div>Shipping</div>
+        <div>{{ fmt_money(prices["shipping"]) }}</div>
+    </div>
+
+    {% if coupon %}
+    <div class="flex flex-row justify-between">
+        <div>Coupon ({{ coupon[0] }}, -{{ coupon[1] }}%)</div>
+        <div>{{ fmt_money(prices["discount"]) }}</div>
+    </div>
+    {% endif %}
+
+    <div class="max-w border-b-2 border-gray-500"></div>
+
+    <div class="flex flex-row justify-between">
+        <div>Total</div>
+        <div>{{ fmt_money(prices["total"]) }}</div>
+    </div>
+
+    <button class="min-w-full py-2 bg-red-600 text-white border border-red-600 rounded hover:bg-white hover:text-red-600 disabled:bg-gray-500 disabled:border-gray-500 disabled:text-white" form="justification">
+        SUBMIT JUSTIFICATION
+    </button>
+
+</div>
+
+</div>
+
+{% endblock %}

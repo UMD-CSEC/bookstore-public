@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-4xl text-red-600">Bookstore Login</div>
+
+<div class="text-center">
+    <div class="text-xl">*********WARNING*********WARNING*********</div>
+    NOTICE: Unauthorized access to this computer is in violation of Md. <br/>
+    Annotated Code, Criminal Law Article &sect;&sect; 8-606 and 7-302 and the Computer <br/>
+    Fraud and Abuse Act, 18 U.S.C. &sect;&sect; 1030 et seq. The University may <br/>
+    monitor use of its computing resources as permitted by state and federal <br/>
+    law, including the Electronic Communications Privacy Act, 18 U.S.C. &sect;&sect; <br/>
+    2510-2521 and the Md. Annotated Code, Courts and Judicial Proceedings <br/>
+    Article, Section 10, Subtitle 4. Anyone using this system acknowledges <br/>
+    that all use is subject to University of Maryland Policy on the <br/>
+    Acceptable Use of Information Technology Resources available at <br/>
+    http://www.umd.edu/aup. <br/>
+    By logging in to this/these application(s) I acknowledge and agree to <br/>
+    all terms and conditions regarding my access and the information <br/>
+    contained therein.
+</div>
+
+<div class="text-center my-4">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="italic text-red-600 font-normal text-xl">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<form action="/login" method="post" class="flex flex-col w-64 mx-auto">
+    <label class="font-bold mt-4" for="username">Username</label>
+    <input class="border-b border-gray-500 p-2" type="text" name="username" placeholder="Enter your username">
+    <label class="font-bold mt-2" for="password">Password</label>
+    <input class="border-b border-gray-500 p-2" type="password" name="password" placeholder="Enter your password">
+    <button class="min-w-full mt-6 py-2 font-bold bg-red-600 text-white border border-red-600 rounded hover:bg-white hover:text-red-600">
+        SIGN IN
+    </button>
+</form>
+
+{% endblock %}

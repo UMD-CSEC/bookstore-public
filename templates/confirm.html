@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="text-4xl text-red-600 mb-2">Congratulations!</div>
+
+There was an error fulfilling your order:
+
+<ul class="list-disc list-inside ">
+{% if 0 in cart %}
+    <li>
+        Unfortunately, one of the books in your order is invalid.
+        Please see an administrator to resolve this issue.
+    </li>
+    <li>
+        If you are an administrator, please <a href="/login" class="underline">log in</a>.
+    </li>
+{% else %}
+    <li>
+        Unfortunately, your order does not contain the sacred book.
+        Until you add the sacred book to your order, we cannot fulfill it.
+    </li>
+{% endif %}
+</ul>
+
+{% endblock %}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+<div class="flex flex-col items-stretch min-h-screen">
+    <div class="pb-2 mt-2 mb-1 border-b border-gray-500">
+        <div class="max-w-screen-lg mx-4 lg:mx-auto flex flex-col items-center md:flex-row md:justify-between">
+            <div></div>
+            <div class="flex flex-row text-gray-600">
+                <div class="text-xs w-32">CURRENT WEATHER ON CAMPUS</div>
+                <div class="text-3xl">{{ weather }}°</div>
+            </div>
+            <a href="/cart">
+                <div class="flex flex-row space-x-2 items-center">
+                    <span class="font-bold">Cart</span> &nbsp;|
+                    {{ cart|length }} item{% if cart|length != 1 %}s{% endif %}
+                    <svg role="presentation" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                        <path class="svgIconFill" fill="#cc0000" fill-rule="evenodd" d="M8.56 18.44a1.5 1.5 0 1 1-2.12 2.12 1.5 1.5 0 0 1 2.12-2.12zm10 0a1.5 1.5 0 1 1-2.12 2.12 1.5 1.5 0 0 1 2.12-2.12zM3 3h2a1 1 0 0 1 .964.63L6 3.74 6.58 6h12.8a2 2 0 0 1 1.614.864L21.08 7a2 2 0 0 1 .16 1.723l-.07.167-3.28 6.56a1 1 0 0 1-.766.542L17 16H8a1 1 0 0 1-.964-.63L7 15.26 4.24 5H3a1 1 0 0 1-.117-1.993L3 3h2z"></path>
+                    </svg>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="pb-2 mb-2 border-b border-gray-500">
+        <div class="max-w-screen-lg mx-4 lg:mx-auto flex flex-col items-center md:flex-row md:justify-between">
+            <a href="/">
+                <img class="max-h-32" src="/static/umd.png" alt="Definitely a UMD logo">
+            </a>
+
+            <div class="flex flex-col items-end">
+                <div class="text-2xl text-red-600 mb-2"><span class="font-bold">Welcome</span> to Your Bookstore</div>
+
+                <form method="get" action="/search">
+                    <div class="border-b border-gray-500 w-[560px] flex flex-row">
+                        <input class="relative z-10 float-left mb-0 grow" type="text" name="query" placeholder="Enter your search details (product title, ISBN, keyword, etc.)"
+                            {% if query %}value="{{ query }}"{% endif %}>
+                        <button aria-label="search">
+                            <svg role="presentation" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                <path fill="#939393" fill-rule="evenodd" d="M20.847 19.486l-3.258-3.248a7.59 7.59 0 0 0 1.62-4.696 7.667 7.667 0 1 0-7.667 7.666 7.59 7.59 0 0 0 4.696-1.62l3.248 3.26a.958.958 0 0 0 1.361 0 .958.958 0 0 0 0-1.362zM5.792 11.542a5.75 5.75 0 1 1 5.75 5.75 5.75 5.75 0 0 1-5.75-5.75z"></path>
+                            </svg>
+                        </button>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="pb-2 mb-4 border-b border-gray-500">
+        <div class="max-w-screen-lg mx-4 lg:mx-auto flex flex-col items-center lg:flex-row lg:justify-between font-bold">
+            <div class="hover:underline decoration-red-600 decoration-4">COURSE MATERIAL & TEXTBOOKS</div>
+            <div class="hover:underline decoration-red-600 decoration-4">APPAREL & SPIRIT SHOP</div>
+            <div class="hover:underline decoration-red-600 decoration-4">SUPPLIES & TECHNOLOGY</div>
+            <div class="hover:underline decoration-red-600 decoration-4">STUDENT ESSENTIALS</div>
+            <div class="hover:underline decoration-red-600 decoration-4">HEALTH & WELLNESS</div>
+        </div>
+    </div>
+
+    <div class="w-full">
+        <div class="max-w-screen-lg mx-4 lg:mx-auto">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <div class="grow h-16"></div>
+
+    <div class="w-full bg-gray-800 mt-4 text-white">
+        <div class="max-w-screen-lg mx-4 lg:mx-auto my-4 space-y-2 text-sm">
+            <div class="text-xl">
+                <span class="text-red-600">U</span>h-Oh!
+                <span class="text-red-600">M</span>y
+                <span class="text-red-600">D</span>atabases
+            </div>
+
+            <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2">
+                <div class="w-60">
+                    <div class="font-bold">UNIVERSITY OF MARYLAND CYBERSECURITY CLUB</div>
+                    <div class="text-gray-400">4311 Physics Building</div>
+                    <div class="text-gray-400">4150 Campus Drive</div>
+                    <div class="text-gray-400">College Park, MD 20742</div>
+                </div>
+                <div class="w-48">
+                    <div class="font-bold">CLUB HOURS</div>
+                    <div class="text-gray-400"><div class="inline-block w-12">Mon:</div> CLOSED</div>
+                    <div class="text-gray-400"><div class="inline-block w-12">Tue:</div> CLOSED</div>
+                    <div class="text-gray-400"><div class="inline-block w-12">Wed:</div> 7pm - 9pm</div>
+                    <div class="text-gray-400"><div class="inline-block w-12">Thu:</div> CLOSED</div>
+                    <div class="text-gray-400"><div class="inline-block w-12">Fri:</div> CLOSED</div>
+                    <div class="text-gray-400"><div class="inline-block w-12">Sat:</div> CLOSED</div>
+                    <div class="text-gray-400"><div class="inline-block w-12">Sun:</div> CLOSED</div>
+                </div>
+                <div class="w-60">
+                    <div class="font-bold">QUICKLINKS</div>
+                    <div class="text-gray-400"><a href="https://csec.umd.edu" class="hover:underline">CSEC home page</a></div>
+                    <div class="text-gray-400"><a href="/static/bookstore.db" class="hover:underline">Site database</a></div>
+                    <div class="text-gray-400"><a href="https://sqliteonline.com/#urldb=https://books.umdctf.io/static/bookstore.db" class="hover:underline">View db online</a></div>
+                    <div class="text-gray-400"><a href="/reset" class="hover:underline">Clear current session</a></div>
+                </div>
+            </div>
+
+            <div class="flex flex-col max-w-3xl md:flex-row space-y-2 md:space-x-2 items-end flex-wrap">
+                <div class="h-12">
+                    <img class="object-scale-down max-h-full" src="/static/csec.jpg" alt="Cybersecurity Club Logo">
+                </div>
+                <div class="text-gray-400 hover:underline">Copyright</div>
+                <div class="text-gray-400">•</div>
+                <div class="text-gray-400 hover:underline">Privacy Policy</div>
+                <div class="text-gray-400">•</div>
+                <div class="text-gray-400 hover:underline">Accessibility</div>
+                <div class="text-gray-400">•</div>
+                <div class="text-gray-400 hover:underline">Terms of Use</div>
+                <div class="text-gray-400">•</div>
+                <div class="text-gray-400 hover:underline">CA Privacy Policy</div>
+                <div class="text-gray-400">•</div>
+                <div class="text-gray-400 hover:underline">Returns and Refunds</div>
+                <div class="text-gray-400">•</div>
+                <div class="text-gray-400 hover:underline">Do Not Sell or Share My Personal Information</div>
+                <div class="text-gray-400">•</div>
+                <div class="text-gray-400 hover:underline">Manage My Data</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="h-16"></div>
+</div>
+</body>
+</html>

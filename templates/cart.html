@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if results|length == 0 %}
+    Your cart is empty!
+
+    Add some books to your cart so we can take your money!
+{% else %}
+<div class="flex flex-col space-y-2 md:space-y-0 md:flex-row md:justify-between">
+
+<div class="w-full flex flex-col space-y-2 md:mr-4">
+    <div class="mb-4">
+        <span class="text-4xl text-red-600">Your shopping cart</span>
+        <span class="text-2xl ml-2">({{ cart|length }} item{% if cart|length != 1 %}s{% endif %})</span>
+    </div>
+
+    {% for book in results %}
+    <div class="col-span-full border-b border-gray-500"></div>
+
+    <div class="flex flex-row items-center space-x-2">
+        <img class="h-52" src="{{ book['img'] }}" alt="Cover of {{ book['title'] }}">
+        <div class="flex flex-col">
+            <div class="font-bold text-red-600 break-words">{{ book["title"] }}</div>
+            <div class="break-words">{{ book["author"] }}</div>
+        </div>
+
+        <div class="grow"></div>
+
+        <div class="font-bold">{{ fmt_money(book["price"]) }}</div>
+
+        <form class="pt-2" method="post" action="/book">
+            <input type="hidden" name="book" value="{{ book['id'] }}">
+            <input type="hidden" name="from" value="cart">
+            <button type="submit">
+                <svg role="presentation" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <path fill="#e03a3e" fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3 11H9a1 1 0 1 1 0-2h6a1 1 0 1 1 0 2z"></path>
+                </svg>
+            </button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="bg-stone-200 p-4 space-y-2 font-bold w-96 max-h-fit">
+    <div class="text-2xl">Order Summary</div>
+
+    <div class="flex flex-row justify-between">
+        <div>Subtotal</div>
+        <div>{{ fmt_money(prices["books"]) }}</div>
+    </div>
+
+    <div class="flex flex-row justify-between">
+        <div>Handling</div>
+        <div>{{ fmt_money(prices["handling"]) }}</div>
+    </div>
+
+    <div class="flex flex-row justify-between">
+        <div>Shipping</div>
+        <div>{{ fmt_money(prices["shipping"]) }}</div>
+    </div>
+
+    {% if coupon %}
+    <div class="flex flex-row justify-between">
+        <div>Applied Coupon</div>
+        <div>{{ fmt_money(prices["discount"]) }}</div>
+    </div>
+    {% endif %}
+
+    <div class="max-w border-b-2 border-gray-500"></div>
+
+    <div class="flex flex-row justify-between">
+        <div>Total</div>
+        <div>{{ fmt_money(prices["total"]) }}</div>
+    </div>
+
+    <div class="pt-2 pb-6">
+        <form action="/order/justify">
+            <button
+                class="min-w-full py-2 bg-red-600 text-white border border-red-600 rounded hover:bg-white hover:text-red-600 disabled:bg-gray-500 disabled:border-gray-500 disabled:text-white"
+                {% if prices["total"] > 0 %}disabled{% endif %}>
+                PROCEED TO CHECKOUT
+            </button>
+        </form>
+        {% if prices["total"] > 0 %}
+        <div class="italic text-red-600">
+            Unforunately, as a student, you are too poor to afford this.
+            Better luck next time!
+        </div>
+        {% endif %}
+    </div>
+
+    <form action="/coupon" method="post">
+        <label for="coupon">Enter Promo Code</label>
+        <div class="flex flex-row">
+            <input type="text" name="coupon" class="bg-inherit border-b border-gray-500 mb-1 mr-2">
+            <button class="h-10 px-2 bg-white text-red-600 border border-red-600 rounded hover:bg-red-600 hover:text-white">
+                ADD
+            </button>
+        </div>
+    </form>
+    {% if coupon %}
+    <div class="italic font-normal text-green-600 break-words">
+        Currently applied: {{ coupon[0] }} (-{{ coupon[1] }}%)
+    </div>
+    {% endif %}
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="italic text-red-600 font-normal">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
