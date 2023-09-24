@@ -17,6 +17,7 @@ To show the hidden book, we can input the standard injection query `' OR 1=1; --
 - `OR 1=1` adds a condition that the row should be selected if `1=1`, which is always true. The result is that every book in the `books` table gets selected.
 - `;` completes the current statement. This isn't strictly necessary, but it's good practice.
 - `--` is the symbol to comment out the rest of the query so that we don't need to deal with it.
+
 This ends up selecting all books from the database, including the hidden book.
 
 ![Book list, including the hidden book](part1-solved.png)
@@ -30,7 +31,7 @@ Let's add the hidden book to our cart. This costs quite a bit, but there's a pro
 
 Somehow we need to find a promo code that gives us a better discount. There are a few ways to go from here, but the intended path was to use a query to filter for good promo codes.
 
-If we look at the `coupons` table in our copy of the database, we see a column called `discount`, which stores the percent to take off of the purchase. So, we'll just add an extra clause that looks for coupons that could give us the books for free. One input that accomplishes this is `' OR discount >= 100; --`, which selects all coupons that have a blank name (of which there are none) or a discount of at least 100%. Entering this into the promo code field gives us the code for free books.
+If we look at the `coupons` table in our copy of the database, we see a column called `discount`, which stores the percent to take off of the purchase. So, we'll just add an extra clause that looks for coupons that could give us the books for free. One input that accomplishes this is `' OR discount >= 100; --`, which selects all coupons that have a blank name (of which there are none) or that have a discount of at least 100%. Entering this into the promo code field gives us the code for free books.
 
 ![Applied promo code, giving us 100% off](part2-solved.png)
 
@@ -55,7 +56,7 @@ It seems that columns 2 and 3 are displayed to us in text, and column 5 is treat
 ```
 aaa' UNION SELECT 1,title,justification,4,5,6,7 FROM books; --
 ```
-Instead of selecting the numbers 2 and 3, we select the title and justification columns from the `books` table. This gives us the following result:
+Now, instead of selecting the numbers 2 and 3, we select the title and justification columns from the `books` table. This gives us the following result:
 
 ![Title and justification for all the books](part3-solved.png)
 
@@ -68,7 +69,7 @@ We enter the flag to the previous part as our justification for the hidden book.
 
 First, we notice that if we try to log in with any username that isn't `admin`, the error returned is `User not found`. But if we log in with the username `admin`, the error is `Invalid username or password`. Also, if we put in the query `' OR 1=1; --`, we also get `Invalid username or password`. So, we get a different response depending on whether the SQL query returned a row or not, which we can exploit to find the admin password.
 
-The script for finding the password is in [blind.py](./blind.py), which uses the [requests module](https://pypi.org/project/requests/). See if you can understand what it's doing!
+The script for finding the password is in [blind.py](./blind.py), which requires the [requests module](https://pypi.org/project/requests/) to be installed. See if you can understand what it's doing!
 
 After finding the password, we can log in as the admin, and get a congratulatory message.
 
@@ -83,4 +84,7 @@ Suppose we didn't have the source code or a copy of the website database. How co
 ```
 aaa' UNION SELECT 1,tbl_name,sql,4,5,6,7 from sqlite_master; --
 ```
+Result below:
+![Result of the master table query](addendum-master-table-result.png)
+
 This gives us the table and column names, as well as the column types, which tells us what we need to know about the structure of the tables.
