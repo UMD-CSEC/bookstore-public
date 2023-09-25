@@ -37,6 +37,36 @@ If we look at the `coupons` table in our copy of the database, we see a column c
 
 Flag for this part: `flag{alumni_donation}`
 
+### Task 2: Alternate solution
+In the last section, we got lucky because there happened to be a promo code for 100% off, and that's what we were targeting. However, in general, a row with a specific property might not exist, or if we didn't know what we were looking for, then we might not be able to impose a specific constraint, or . Thankfully, there are many other ways to approach this challenge.
+
+Let's start by trying to figure out (or at least, make a good assumption for) how the web server works.
+We already know that when we run `' OR 1=1; --`, the website only shows one discount code.
+However, if we look at the database, we can see that there *are* multiple other discount codes:
+
+![DB explorer, showing multiple rows when selecting all coupons](part2b-intuition.png)
+
+A reasonable assumption would be that the database could be returning all of these rows to the website, but then the website is ignorning everything after the first discount code. Unfortunately, since this is SQLi, we don't control the code running on the website itself -- that is, if the web server is coded to only look at the first coupon returned, we can't change it to look at the second, or the third, or so on. We can only control what the database gives the website, so we need to look there.
+
+Since the website is only applying the first coupon code returned, we need to find some way to bring other coupon codes to the top of the list. If you have some prior coding experience, you might be immediately thinking of sorting the list, and we can in fact do that with SQL. If we append `ORDER BY discount DESC` to our existing `' OR 1=1` payload, then the coupon codes will be returned with the highest discount code first. This gives us another solution to the 2nd flag.
+
+![DB explorer, but with the rows sorted by max discount](part2b-sort.png)
+
+But what if the row we were looking for would be in the middle of a sort? A more general solution would be to enumerate through all the rows in the table until we find the desired result. For this, we can use the `LIMIT` and `OFFSET` keywords.
+
+- `LIMIT n` allows us to specify that the database should return `n` results. We don't actually care too much about `LIMIT`'s functionality in this example, since the webserver will only consider the first result regardless of however many the database returns. It's just necessary for `OFFSET` to work.
+  - ![Telling the database to only return one row](part2b-limit1.png)
+  - ![Telling the database to only return two rows](part2b-limit2.png)
+- `OFFSET n` allows us to skip the first `n` results:
+  - ![Selecting the first coupon](part2b-offset0.png)
+  - ![Selecting the second coupon, skipping one](part2b-offset1.png)
+  - ![Selecting the third coupon, skipping two](part2b-offset2.png)
+  - Note that you can combine `OFFSET` with `ORDER BY` -- the database will first sort the list, then it will skip `n` results
+
+Since the webserver seems to only be applying the first coupon code, we can simply change which coupon code appears first. We could have tried all the coupon codes one after another until we find one that works. For example, `' OR 1=1 LIMIT 1 OFFSET 1; --`, then `' OR 1=1 LIMIT 1 OFFSET 2; --`, etc., until we get to `' OR 1=1 LIMIT 1 OFFSET 5; --`, which works.
+
+The point of this section is not that you need to solve the coupon code three different ways before continue, but rather to demonstrate that there are often many ways to approach challenges.
+
 ## Task 3: Finding justification for book purchases
 After proceeding to checkout, we are asked to provide a justification for this purchase. In the `books` table of our copy of the database, there's a `justification` column that isn't shown to us. Can we get the website to show it to us somehow?
 
